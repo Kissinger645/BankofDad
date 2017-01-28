@@ -1,4 +1,5 @@
-﻿Check for user
+﻿
 check if user/pass match
 add money
 withdraw money
+get running balance

@@ -27,7 +27,7 @@ namespace CodeFirstATM
                 if (choice == 1) //New user
                 {
                     var username = Read("Enter a UserName...");
-                  // check if user already exists
+                    // check if user already exists
                     if (db.Users.Any(u => u.Username == username))
                     {
                         Console.WriteLine("This user already exists. Press any key to try again");
@@ -62,29 +62,45 @@ namespace CodeFirstATM
 
         public static void Login()
         {
-            Console.Clear();
-            Console.WriteLine("FIRST BANK OF DAD");
-            Console.WriteLine("Please login...");
-            var tmpUser = Read("Enter Username");
-            var tmpPass = Read("Enter Password");
-            //check if password matches
-            //if so, goto Transaction screen
-            //TransactionScreen();
+            using (var db = new CodeFirstATMContext())
+            {
+                Console.Clear();
+                Console.WriteLine("FIRST BANK OF DAD");
+                Console.WriteLine("Please login...");
+                var tmpUser = Read("Enter Username");
+                var tmpPass = Read("Enter Password");
+                if (db.Users.Any((u => u.Username == tmpUser) && (u => u.Password == tmpPass))
+                {
+                    TransactionScreen();
+                }
+                Console.WriteLine("Sorry your username or password are incorrect");
+                Console.WriteLine("Press 1 to try again or 2 to exit");
+                int choice = int.Parse(Read(">.."));
+                if (choice == 1)
+                {
+                    Login();
+                }
+                Welcome();
+            }
+
+            
         }
-        /*
+     
        public void TransactionScreen()
        {
            //Show balance, deposit, withdraw, exit
+           Console.WriteLine("Hello, your balance is{}");
        }
-       public double Deposit()
-       {
-           //add money to account
-       }
-       public double Withdraw()
-       {
-           return amount;
-       }
-       */
+        /*
+    public double Deposit()
+    {
+        //add money to account
+    }
+    public double Withdraw()
+    {
+        return amount;
+    }
+    */
     }
 }
 
