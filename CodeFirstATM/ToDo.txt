@@ -1,5 +1,4 @@
 ﻿
 check if user/pass match
-add money
-withdraw money
 get running balance
+pass User.Id to other methods
