@@ -75,9 +75,10 @@ namespace CodeFirstATM
             
             if (db.Users.Any(u => u.Username == tmpUser && u.Password == tmpPass))
             {
-                var tmpUserId = db.Users.Where(u => u.Username == tmpUser).First();
+                var tmpUserId = db.Users.Where(u => u.Username == tmpUser).First(); // **** convert user to UserId *****
+                int UserId = 1; // change 1 to UserId
                 Console.Clear();
-                TransactionScreen(db);
+                TransactionScreen(db, UserId);
             }
             Console.WriteLine("Sorry your username or password are incorrect");
             Console.WriteLine("Press 1 to try again or 2 to exit");
@@ -91,9 +92,10 @@ namespace CodeFirstATM
             Welcome();
         }
 
-        public static void TransactionScreen(CodeFirstATMContext db)
+        public static void TransactionScreen(CodeFirstATMContext db, int _userId)
         {
-            double balance = db.Transactions.Sum(t => t.Amount);//narrow down to current user
+            int userId = _userId;
+            double balance = db.Transactions.Sum(t => t.Amount); //narrow down to current user
             Console.Clear();
             Console.WriteLine($"Hello, your balance is {balance}");
             Console.WriteLine("Press 1 to make a Deposit");
@@ -104,11 +106,11 @@ namespace CodeFirstATM
             {
                 case 1:
                     Console.Clear();
-                    Deposit(db);
+                    Deposit(db, userId);
                     break;
                 case 2:
                     Console.Clear();
-                    Withdraw(db);
+                    Withdraw(db, userId);
                     break;
                 default:
                     Console.Clear();
@@ -117,8 +119,9 @@ namespace CodeFirstATM
             }
         }
 
-        public static void Deposit(CodeFirstATMContext db)
+        public static void Deposit(CodeFirstATMContext db, int _userId)
         {
+            int UserId = _userId;
             double amount = double.Parse(Read("Enter the amount that you would like to deposit"));
 
             Transaction newTransaction = new Transaction
@@ -129,14 +132,15 @@ namespace CodeFirstATM
             db.Transactions.Add(newTransaction);
             db.SaveChanges();
             Console.Clear();
-            TransactionScreen(db);
+            TransactionScreen(db, 1);
         }
 
-        public static void Withdraw(CodeFirstATMContext db)
+        public static void Withdraw(CodeFirstATMContext db, int _userId)
         {
+            int UserId = _userId;
             double balance = db.Transactions.Sum(t => t.Amount);//narrow down to current user
             double amount = double.Parse(Read("Enter the amount that you would like to withdraw"));
-            if ((balance-amount)>0)
+            if ((balance-amount) >= 0)
             {
 
                 Transaction newTransaction = new Transaction
@@ -147,13 +151,13 @@ namespace CodeFirstATM
                 db.Transactions.Add(newTransaction);
                 db.SaveChanges();
                 Console.Clear();
-                TransactionScreen(db);
+                TransactionScreen(db, _userId);
             }
             Console.Clear();
             Console.WriteLine("You have insufficient funds for this transaction");
             Console.WriteLine("Press any key to return to the menu");
             Console.ReadLine();
-            TransactionScreen(db);
+            TransactionScreen(db, _userId);
 
         }
         
