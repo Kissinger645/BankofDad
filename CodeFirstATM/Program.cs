@@ -36,7 +36,7 @@ namespace CodeFirstATM
                     // check if user already exists
                     if (db.Users.Any(u => u.Username == username))
                     {
-                        Console.WriteLine("This user already exists. Press any key to try again");
+                        Console.WriteLine("This username is already taken. Press any key to try again");
                         Console.ReadKey();
                         Console.Clear();
                         Welcome();
@@ -44,7 +44,6 @@ namespace CodeFirstATM
                     else
                     {
                         var password = Read("Enter a Password...");
-
                         User newUser = new User
                         {
                             Username = username,
@@ -52,6 +51,7 @@ namespace CodeFirstATM
                         };
                         db.Users.Add(newUser);
                         db.SaveChanges();
+                        Console.WriteLine("Congratulations, your account is now active.");
                         Console.WriteLine("Press any key to login");
                         Console.ReadKey();
                         Console.Clear();
@@ -73,10 +73,10 @@ namespace CodeFirstATM
             Console.WriteLine("Please login...");
             var tmpUser = Read("Enter Username");
             var tmpPass = Read("Enter Password");
-            //get User.Id from tmpUser
-            if (db.Users.Any(u => u.Username == tmpUser))//need to implement password matches check
+            
+            if (db.Users.Any(u => u.Username == tmpUser && u.Password == tmpPass))
             {
-                //store UserId in temp file
+                var tmpUserId = db.Users.Where(u => u.Username == tmpUser).First();
                 Console.Clear();
                 TransactionScreen(db);
             }
@@ -85,8 +85,10 @@ namespace CodeFirstATM
             int choice = int.Parse(Read(">.."));
             if (choice == 1)
             {
+                Console.Clear();
                 Login(db);
             }
+            Console.Clear();
             Welcome();
         }
 
@@ -96,7 +98,7 @@ namespace CodeFirstATM
             //Show balance, deposit, withdraw, exit
             Console.WriteLine($"Hello, your balance is ");
             Console.WriteLine("Press 1 to make a Deposit");
-            Console.WriteLine("Press 2 to make a Withdrawel");
+            Console.WriteLine("Press 2 to make a Withdrawal");
             Console.WriteLine("Press 3 to Exit");
             int choice = int.Parse(Read(">.."));
             switch (choice)
@@ -122,7 +124,7 @@ namespace CodeFirstATM
 
             Transaction newTransaction = new Transaction
             {
-                UserId = 1,
+                UserId = 1,//need to change to current userId
                 Amount = amount,
             };
             db.Transactions.Add(newTransaction);
@@ -135,10 +137,11 @@ namespace CodeFirstATM
         {
 
             double amount = double.Parse(Read("Enter the amount that you would like to withdraw"));
+            //add code to check if it will be overdrawn
 
             Transaction newTransaction = new Transaction
             {
-                UserId = 1,
+                UserId = 1,//need to change to current userId
                 Amount = -(amount),
             };
             db.Transactions.Add(newTransaction);

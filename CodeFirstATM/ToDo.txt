@@ -1,4 +1,4 @@
 ﻿
-check if user/pass match
 get running balance
 pass User.Id to other methods
+check if withdraw will be overdrawn
