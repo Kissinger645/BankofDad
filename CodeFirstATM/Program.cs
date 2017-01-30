@@ -14,9 +14,9 @@ namespace CodeFirstATM
             Console.WriteLine(input);
             return Console.ReadLine();
         }
+
         static void Main(string[] args)
         {
-            string tmpUser;
             Welcome();
 
         }
@@ -33,7 +33,6 @@ namespace CodeFirstATM
                 if (choice == 1) //New user
                 {
                     var username = Read("Enter a UserName...");
-                    // check if user already exists
                     if (db.Users.Any(u => u.Username == username))
                     {
                         Console.WriteLine("This username is already taken. Press any key to try again");
@@ -94,9 +93,9 @@ namespace CodeFirstATM
 
         public static void TransactionScreen(CodeFirstATMContext db)
         {
-
-            //Show balance, deposit, withdraw, exit
-            Console.WriteLine($"Hello, your balance is ");
+            double balance = db.Transactions.Sum(t => t.Amount);//narrow down to current user
+            Console.Clear();
+            Console.WriteLine($"Hello, your balance is {balance}");
             Console.WriteLine("Press 1 to make a Deposit");
             Console.WriteLine("Press 2 to make a Withdrawal");
             Console.WriteLine("Press 3 to Exit");
@@ -135,20 +134,29 @@ namespace CodeFirstATM
 
         public static void Withdraw(CodeFirstATMContext db)
         {
-
+            double balance = db.Transactions.Sum(t => t.Amount);//narrow down to current user
             double amount = double.Parse(Read("Enter the amount that you would like to withdraw"));
-            //add code to check if it will be overdrawn
-
-            Transaction newTransaction = new Transaction
+            if ((balance-amount)>0)
             {
-                UserId = 1,//need to change to current userId
-                Amount = -(amount),
-            };
-            db.Transactions.Add(newTransaction);
-            db.SaveChanges();
+
+                Transaction newTransaction = new Transaction
+                {
+                    UserId = 1,//need to change to current userId
+                    Amount = -(amount),
+                };
+                db.Transactions.Add(newTransaction);
+                db.SaveChanges();
+                Console.Clear();
+                TransactionScreen(db);
+            }
             Console.Clear();
+            Console.WriteLine("You have insufficient funds for this transaction");
+            Console.WriteLine("Press any key to return to the menu");
+            Console.ReadLine();
             TransactionScreen(db);
+
         }
+        
     }
 
     public class User
