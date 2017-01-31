@@ -75,8 +75,8 @@ namespace CodeFirstATM
             
             if (db.Users.Any(u => u.Username == tmpUser && u.Password == tmpPass))
             {
-                var tmpUserId = db.Users.Where(u => u.Username == tmpUser).First(); // **** convert user to UserId *****
-                int UserId = 1; // change 1 to UserId
+                var tmpUserId = db.Users.Where(u => u.Username == tmpUser).First();
+                int UserId = tmpUserId.UserId; 
                 Console.Clear();
                 TransactionScreen(db, UserId);
             }
@@ -121,12 +121,11 @@ namespace CodeFirstATM
 
         public static void Deposit(CodeFirstATMContext db, int _userId)
         {
-            int UserId = _userId;
             double amount = double.Parse(Read("Enter the amount that you would like to deposit"));
 
             Transaction newTransaction = new Transaction
             {
-                UserId = 1,//need to change to current userId
+                UserId = _userId,
                 Amount = amount,
             };
             db.Transactions.Add(newTransaction);
@@ -137,7 +136,6 @@ namespace CodeFirstATM
 
         public static void Withdraw(CodeFirstATMContext db, int _userId)
         {
-            int UserId = _userId;
             double balance = db.Transactions.Sum(t => t.Amount);//narrow down to current user
             double amount = double.Parse(Read("Enter the amount that you would like to withdraw"));
             if ((balance-amount) >= 0)
@@ -145,7 +143,7 @@ namespace CodeFirstATM
 
                 Transaction newTransaction = new Transaction
                 {
-                    UserId = 1,//need to change to current userId
+                    UserId = _userId,
                     Amount = -(amount),
                 };
                 db.Transactions.Add(newTransaction);
