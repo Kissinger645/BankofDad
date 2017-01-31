@@ -1,5 +1,4 @@
 ﻿
-get running balance
-pass User.Id to other methods
-check if withdraw will be overdrawn
+
+
 learn how to write tests

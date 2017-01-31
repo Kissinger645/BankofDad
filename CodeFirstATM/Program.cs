@@ -47,7 +47,7 @@ namespace CodeFirstATM
                         {
                             Username = username,
                             Password = password,
-                        };
+                        };                       
                         db.Users.Add(newUser);
                         db.SaveChanges();
                         Console.WriteLine("Congratulations, your account is now active.");
@@ -95,7 +95,7 @@ namespace CodeFirstATM
         public static void TransactionScreen(CodeFirstATMContext db, int _userId)
         {
             int userId = _userId;
-            double balance = db.Transactions.Sum(t => t.Amount); //narrow down to current user
+            double balance = db.Transactions.Where(t => t.UserId == userId).Sum(t => t.Amount); 
             Console.Clear();
             Console.WriteLine($"Hello, your balance is {balance}");
             Console.WriteLine("Press 1 to make a Deposit");
@@ -136,6 +136,7 @@ namespace CodeFirstATM
 
         public static void Withdraw(CodeFirstATMContext db, int _userId)
         {
+            
             double balance = db.Transactions.Sum(t => t.Amount);//narrow down to current user
             double amount = double.Parse(Read("Enter the amount that you would like to withdraw"));
             if ((balance-amount) >= 0)
