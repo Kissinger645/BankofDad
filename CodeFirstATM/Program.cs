@@ -136,8 +136,8 @@ namespace CodeFirstATM
 
         public static void Withdraw(CodeFirstATMContext db, int _userId)
         {
-            
-            double balance = db.Transactions.Sum(t => t.Amount);//narrow down to current user
+
+            double balance = db.Transactions.Where(t => t.UserId == _userId).Sum(t => t.Amount);
             double amount = double.Parse(Read("Enter the amount that you would like to withdraw"));
             if ((balance-amount) >= 0)
             {
