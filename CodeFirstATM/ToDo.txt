@@ -1,4 +1,4 @@
 ﻿
-
+add 0 balance transaction at new user
 
 learn how to write tests

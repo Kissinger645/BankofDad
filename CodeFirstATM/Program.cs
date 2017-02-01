@@ -47,9 +47,23 @@ namespace CodeFirstATM
                         {
                             Username = username,
                             Password = password,
-                        };                       
+                        };
+
                         db.Users.Add(newUser);
                         db.SaveChanges();
+
+                        var tmpUserId = db.Users.Where(u => u.Username == username).First();
+                        int UserId = tmpUserId.UserId;
+
+                        Transaction newTransaction = new Transaction //added to avoid null error at balance method
+                        {
+                            UserId = UserId,
+                            Amount = 0,
+                        };
+                        db.Transactions.Add(newTransaction);
+                        db.SaveChanges();
+
+
                         Console.WriteLine("Congratulations, your account is now active.");
                         Console.WriteLine("Press any key to login");
                         Console.ReadKey();
@@ -155,7 +169,7 @@ namespace CodeFirstATM
             Console.Clear();
             Console.WriteLine("You have insufficient funds for this transaction");
             Console.WriteLine("Press any key to return to the menu");
-            Console.ReadLine();
+            Console.ReadKey();
             TransactionScreen(db, _userId);
 
         }
